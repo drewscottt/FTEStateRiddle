@@ -118,7 +118,6 @@ public class FTEMain {
 			// if union has 2 partitions, save it to results
 			if (uf.getPartitions() == 2) {
 				ArrayList<Integer> areas = uf.getNonZeroAreas();
-				removal.add(uf.getParentOfBiggest());
 				results.put(areas, removal);
 			}
 			
