@@ -1,3 +1,9 @@
+/**
+ * @author Drew Scott
+ * 
+ * Contains state class
+ */
+
 import java.util.ArrayList;
 
 
@@ -49,12 +55,7 @@ public class State {
 		this.neighbors = newNeighbors;
 	}
 	
-	public String toString() {
-		ArrayList<String> neighborNames = new ArrayList<String>();
-		for (State neighbor : this.neighbors) {
-			neighborNames.add(neighbor.getName());
-		}
-		
+	public String toString() {		
 		return this.name;
 	}
 	

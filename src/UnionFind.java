@@ -1,3 +1,9 @@
+/**
+ * @author Drew Scott
+ * 
+ * Contains UnionFind class
+ */
+
 import java.util.ArrayList;
 
 public class UnionFind {
@@ -27,6 +33,12 @@ public class UnionFind {
 		}
 	}
 	
+	/**
+	 * adds state1 and state2 to the same union
+	 * 
+	 * @param state1
+	 * @param state2
+	 */
 	public void union(State state1, State state2) {
 		int id1 = state1.getId();
 		int id2 = state2.getId();
@@ -60,6 +72,10 @@ public class UnionFind {
 		this.parents.set(smaller, bigger);
 	}
 	
+	/**
+	 * @param id
+	 * @return the parent id of the input id
+	 */
 	public int find(int id) {
 		int parent = this.parents.get(id);
 		while (id != parent) {
@@ -71,6 +87,9 @@ public class UnionFind {
 		return parent;
 	}
 	
+	/** 
+	 * @return the number of disjoint partitions
+	 */
 	public int getPartitions() {
     	int parts = 0;
     	for (int i = 0; i < this.count; i++) {
@@ -80,6 +99,9 @@ public class UnionFind {
     	return parts;
     }
 	
+	/**
+	 * @return list of the areas of all of the nonzero areas
+	 */
 	public ArrayList<Integer> getNonZeroAreas() {
 		ArrayList<Integer> nonZeroAreas = new ArrayList<Integer>();
 		
@@ -90,6 +112,9 @@ public class UnionFind {
 		return nonZeroAreas;
 	}
 	
+	/**
+	 * @return the parent State of the union with the biggest area
+	 */
 	public State getParentOfBiggest() {
 		int indexOfMax = 0;
 		int max = 0;
