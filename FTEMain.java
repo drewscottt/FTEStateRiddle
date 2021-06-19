@@ -27,23 +27,19 @@ public class FTEMain {
 		// areas and neighbor files
 		File areaFile = new File("StateAreas.csv");
 		File neighborFile = new File("NeighborStates.csv");
-		
+
 		// set up states list with the area and neigbor info
 		ArrayList<State> states = createStatesAndAreas(areaFile);
 		setNeighbors(states, neighborFile);
-		
-        // get total area
-        float totalArea = 0;
-        for (State state : states) {
-            totalArea += (float) state.getArea();
-        }
 
+		// get total area
+		float totalArea = getArea(states);
 
-        float maxRemoveArea = totalArea;
+		float maxRemoveArea = totalArea;
 		// go through all possible removal combinations
 		for (int i = 2; i < states.size() - 2; i++) {
-			System.out.println("# states removed: " + i + ": ");
-            System.out.println("Max remove area: " + maxRemoveArea + ", " + 100*(maxRemoveArea / totalArea) + "%");			
+			System.out.println("Max small region for " + i + "-removal, with: ");
+			System.out.println("Max remove area: " + maxRemoveArea + ", " + 100*(maxRemoveArea / totalArea) + "%");			
 
 			// get results for i-removal
 			HashMap<ArrayList<Integer>, HashSet<State>> results = getResults(states, i, maxRemoveArea);
@@ -65,30 +61,41 @@ public class FTEMain {
 			}
 
 			// print the largestMin result, along with other interesting data
-			System.out.println("Largest minimal area: " + largestMin + ", with " + smallestMax + " as the bigger chunk");
-            
-            float smallPercent = ((float) largestMin / totalArea) * 100;
-            float bigPercent = ((float) smallestMax / totalArea) * 100;
-            float removedPercent = ((float) (totalArea - (smallestMax + largestMin)) / totalArea) * 100;
-            System.out.println("Percent areas: " + smallPercent + "%, " + bigPercent + "%, Removed: " + removedPercent + "%");
-			
-            int difference = smallestMax - largestMin;
-			System.out.println("Difference: " + difference);
-			
-            float avg = ((float) (largestMin + smallestMax)) / 2;
-			float percentDiff = ((float) difference / avg) * 100;
-			System.out.println("% difference: " + percentDiff + "%");
-			
-            System.out.println("Removed states: " + removed + "\n");
+			printResults(largestMin, smallestMax, totalArea);
+			System.out.println("Removed states: " + removed + "\n");
 
-            // get maxRemoveArea
-            float tempMaxRemove = ((totalArea / 2) - largestMin) * 2;
-            if (tempMaxRemove < maxRemoveArea) {
-                maxRemoveArea = tempMaxRemove;
-            }
+			// get maxRemoveArea
+			float tempMaxRemove = ((totalArea / 2) - largestMin) * 2;
+			if (tempMaxRemove < maxRemoveArea) {
+				maxRemoveArea = tempMaxRemove;
+			}
 		}
 	}
 	
+	/**
+	 * Prints data associated with the inputs
+	 */
+	private static void printResults(int largestMin, int smallestMax, float totalArea) {
+		// print areas in sq mi
+		int removedArea = totalArea - (largestMin + smallestMax);
+		System.out.println("Smaller area: " + largestMin + ", with " + smallestMax + " as bigger area, " + removedArea + " as removed area");
+			
+		// print % areas
+		float smallPercent = ((float) largestMin / totalArea) * 100;
+		float bigPercent = ((float) smallestMax / totalArea) * 100;
+		float removedPercent = ((float) (totalArea - (smallestMax + largestMin)) / totalArea) * 100;
+		System.out.println("Percent areas: " + smallPercent + "%, " + bigPercent + "%, Removed: " + removedPercent + "%");
+		
+		// print diff between smaller and larger chunks
+		int difference = smallestMax - largestMin;
+		System.out.println("Difference: " + difference);
+		
+		// print % diff
+		float avg = ((float) (largestMin + smallestMax)) / 2;
+		float percentDiff = ((float) difference / avg) * 100;
+		System.out.println("% difference: " + percentDiff + "%");
+	}
+
 	/**
 	 * @param states: ArrayList of all of the states
 	 * @param removals: the number of states to be removed
@@ -104,11 +111,11 @@ public class FTEMain {
 	public static HashMap<ArrayList<Integer>, HashSet<State>> getResults(ArrayList<State> states, int removals, float maxRemoveArea) {
 		HashMap<ArrayList<Integer>, HashSet<State>> results = new HashMap<ArrayList<Integer>, HashSet<State>>();
 
-        ArrayList<State> removalCandidates = getRemovalCandidates(states);
-		
+		ArrayList<State> removalCandidates = getRemovalCandidates(states);
+
 		// get all of the removals-subsets for states
 		ArrayList<HashSet<State>> allRemovals = getSubsets(removalCandidates, removals, maxRemoveArea);
-		
+
 		// go through all removal-subsets
 		for (HashSet<State> removal : allRemovals) {
 			// copy states
@@ -140,34 +147,34 @@ public class FTEMain {
 			// if union has 2 partitions, save it to results
 			if (uf.getPartitions() == 2) {
 				ArrayList<Integer> areas = uf.getNonZeroAreas();
-                
-                if (results.keySet().size() == 0) {
-				    results.put(areas, removal);
-                } else {
-                    ArrayList<Integer> curBest = null;
-                    for (ArrayList<Integer> key : results.keySet()) {
-                        curBest = key;
-                    }
+				
+				if (results.keySet().size() == 0) {
+					results.put(areas, removal);
+				} else {
+					ArrayList<Integer> curBest = null;
+					for (ArrayList<Integer> key : results.keySet()) {
+						curBest = key;
+					}
 
-                    int curMin = curBest.get(0);
-                    int curMax = curBest.get(1);
-                    if (curMin > curMax) {
-                        curMin = curBest.get(1);
-                        curMax = curBest.get(0);
-                    }   
+					int curMin = curBest.get(0);
+					int curMax = curBest.get(1);
+					if (curMin > curMax) {
+						curMin = curBest.get(1);
+						curMax = curBest.get(0);
+					}   
 
-                    int thisMin = areas.get(0);
-                    int thisMax = areas.get(1);
-                    if (thisMin > thisMax) {
-                        thisMin = areas.get(1);
-                        thisMax = areas.get(0);
-                    }
+					int thisMin = areas.get(0);
+					int thisMax = areas.get(1);
+					if (thisMin > thisMax) {
+						thisMin = areas.get(1);
+						thisMax = areas.get(0);
+					}
 
-                    if (thisMin > curMin) {
-                        results.remove(curBest);
-                        results.put(areas, removal);
-                    }
-                }
+					if (thisMin > curMin) {
+						results.remove(curBest);
+						results.put(areas, removal);
+					}
+				}
 			}
 			
 			// reset neighbors, since we deleted some
@@ -175,7 +182,7 @@ public class FTEMain {
 				neighbor.setNeighbors(oldNeighbors.get(neighbor));
 			}
 		}
-		
+
 		return results;
 	}
 
@@ -219,45 +226,58 @@ public class FTEMain {
 		return uf;
 	}
 	
-	private static void getSubsets(ArrayList<State> states, int k, int idx, HashSet<State> current, ArrayList<HashSet<State>> solution, float maxRemoveArea) {
+	private static void getSubsets(ArrayList<State> states, int k, int idx, HashSet<State> current, 
+		ArrayList<HashSet<State>> solution, float maxRemoveArea) {
         
-        // check if area is too big, if it is don't add to solution
-        if (getArea(current) > maxRemoveArea) return;
-	    
-        // add set to solution, since it is correct size and not too much area
-	    if (current.size() == k) {
-	        solution.add(new HashSet<>(current));
-	        return;
-	    }
-	    
-	    // hit end of states list, so set is too small, so don't add to solution
-	    if (idx == states.size()) return;
+		// check if area is too big, if it is don't add to solution
+		if (getArea(current) > maxRemoveArea) return;
 
-	    State x = states.get(idx);
-	    current.add(x);
-	    
-	    // "guess" x is in the subset
-        getSubsets(states, k, idx+1, current, solution, maxRemoveArea);
-        current.remove(x);
-	    
-	    // "guess" x is not in the subset
-        getSubsets(states, k, idx+1, current, solution, maxRemoveArea);
+		// add set to solution, since it is correct size and not too much area
+		if (current.size() == k) {
+			solution.add(new HashSet<>(current));
+			return;
+		}
+
+		// hit end of states list, so set is too small, so don't add to solution
+		if (idx == states.size()) return;
+
+		State x = states.get(idx);
+		current.add(x);
+
+		// "guess" x is in the subset
+		getSubsets(states, k, idx+1, current, solution, maxRemoveArea);
+		current.remove(x);
+
+		// "guess" x is not in the subset
+		getSubsets(states, k, idx+1, current, solution, maxRemoveArea);
 	}
 
+	/**
+	 * @param states: list of states
+	 * @param k: size of subsets
+	 * @param maxRemoveArea: the maximum area of the subsets
+	 * 
+	 * @return res: list of all k-subsets with area less than maxRemoveArea
+	 */
 	public static ArrayList<HashSet<State>> getSubsets(ArrayList<State> states, int k, float maxRemoveArea) {
-	    ArrayList<HashSet<State>> res = new ArrayList<HashSet<State>>();
-	    getSubsets(states, k, 0, new HashSet<State>(), res, maxRemoveArea);
-	    return res;
+		ArrayList<HashSet<State>> res = new ArrayList<HashSet<State>>();
+		getSubsets(states, k, 0, new HashSet<State>(), res, maxRemoveArea);
+		return res;
 	}
 	
-    private static float getArea(HashSet<State> curStates) {
-        float area = 0;
-        for (State state : curStates) {
-            area += state.getArea();
-        }
+	/**
+	 * @param curStates: list of states
+	 * 
+	 * @return area: the combined area of all states in curStates
+	 */
+	private static float getArea(HashSet<State> curStates) {
+		float area = 0;
+		for (State state : curStates) {
+			area += state.getArea();
+		}
 
-        return area;
-    }
+		return area;
+	}
 
 	/**
 	 * @param states: list of states
