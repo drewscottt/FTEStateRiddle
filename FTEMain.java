@@ -8,8 +8,7 @@
  * 	to represent the removed states. Then, see if it results in 2 distinct regions. Then, wait until all k-removals
  * 	are completed, and find the one with the biggest smallest region.
  * 
- * Issues: subset generation is too much, out of memory on 6-removals (although, I'd be surprised if removing 6 states 
- * 	would be better than 5, due to losing too much area).
+ * Issues: subset generation is too much, out of memory on 7-removals 
  */
 
 
@@ -223,19 +222,11 @@ public class FTEMain {
 	    current.add(x);
 	    
 	    //"guess" x is in the subset
-	    try {
-            getSubsets(states, k, idx+1, current, solution);
-	    } catch (OutOfMemoryError e) {
-            return;
-        }
+        getSubsets(states, k, idx+1, current, solution);
         current.remove(x);
 	    
 	    //"guess" x is not in the subset
-        try {
-            getSubsets(states, k, idx+1, current, solution);
-	    } catch (OutOfMemoryError e) {
-            return;
-        }	    
+        getSubsets(states, k, idx+1, current, solution);
 	}
 
 	public static ArrayList<HashSet<State>> getSubsets(ArrayList<State> states, int k) {
