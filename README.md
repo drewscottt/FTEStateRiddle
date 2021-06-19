@@ -14,3 +14,7 @@ While my 5-removal has a larger smaller part than my 6-removal (43.07673% vs. 43
 By removing RI, the smaller half becomes the east half when it was the west half before.
 
 Since the 6-removal didn't find a better path than the 5-removal, I have a strong reason to believe that my 5-removal was optimal (i.e. a 7 or more removal won't do better since it will reduce the area).
+
+UPDATE: now we don't consider removal areas that are impossible to do better than previous removals.
+6-removal with smaller than max remove area: [MO, AR, WY, NE, ID, MS], with 42.997154% for the smaller half. Similar to the first published removal, but substitutes LA for MS. 
+7-removal with smaller than max remove area: [MO, AR, WY, NE, ID, RI, MS], with 42.997154% for the smaller half (again, see RI).
