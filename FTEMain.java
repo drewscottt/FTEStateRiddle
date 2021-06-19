@@ -100,10 +100,10 @@ public class FTEMain {
 	 * @param states: ArrayList of all of the states
 	 * @param removals: the number of states to be removed
 	 * @param maxRemoveArea: the maximum area that can be removed to be better than the best from a previous stage 
-     *
+	 *
 	 * Returns a map of the result with the maximum area for the smallest of 2 chunks, such that the removed area doesn't
-     * exceed maxRemoveArea. Using maxRemoveArea no longer guarantees to return the best result for a k-removal; it
-     * only looks at the removals that could possibly do better.
+	 * exceed maxRemoveArea. Using maxRemoveArea no longer guarantees to return the best result for a k-removal; it
+	 * only looks at the removals that could possibly do better.
 	 * 
 	 * @return results: a map, where keys are 2-length ArrayList<Integer> where each value is the area of distinct
 	 * 	regions created by removing states. The values are sets of states that were removed to generate the area key.
@@ -186,27 +186,27 @@ public class FTEMain {
 		return results;
 	}
 
-    /**
-    * @param states : list of all states
-    * 
-    * Returns a list of states with some removals. These removals are made based on my judgement, such that
-    * I believe it is unlikely that removing any of these states will result in an optimal solution.
-    * This greatly speeds up the process (enabled me to do 6 removal states, whereas before was only 5). 
-    *
-    * @return removalCandidates : list of all states, with several removals
-    */	
-    public static ArrayList<State> getRemovalCandidates(ArrayList<State> states) {
-        ArrayList<State> removalCandidates = new ArrayList<State>(states);
-        String[] leaveIn = new String[]{"ME", "NH", "VT", "MA", "CT", "NY", "NJ", "DE", "WA", "OR", "CA", "NV"};
-        
-        for (String s : leaveIn) {
-            State state = getState(states, s);
+	/**
+	* @param states : list of all states
+	* 
+	* Returns a list of states with some removals. These removals are made based on my judgement, such that
+	* I believe it is unlikely that removing any of these states will result in an optimal solution.
+	* This greatly speeds up the process (enabled me to do 6 removal states, whereas before was only 5). 
+	*
+	* @return removalCandidates : list of all states, with several removals
+	*/	
+	public static ArrayList<State> getRemovalCandidates(ArrayList<State> states) {
+		ArrayList<State> removalCandidates = new ArrayList<State>(states);
+		String[] leaveIn = new String[]{"ME", "NH", "VT", "MA", "CT", "NY", "NJ", "DE", "WA", "OR", "CA", "NV"};
+		
+		for (String s : leaveIn) {
+			State state = getState(states, s);
 
-            removalCandidates.remove(state);
-        }
+			removalCandidates.remove(state);
+		}
 
-        return removalCandidates;
-    }
+		return removalCandidates;
+	}
 
 	/**
 	 * @param states: list of states
